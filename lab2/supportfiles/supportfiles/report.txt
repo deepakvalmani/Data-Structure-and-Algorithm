@@ -1,19 +1,32 @@
-Lab 2: Hex (board game) — Report
-==================================
-
-TODO: write your findings here.
-
 1. The No-Draw Theorem
-   - Describe what the Part C output shows.
-   - Explain why exactly one player must win on a completely filled board
-     (topological argument: a winning path for one player blocks the other).
 
-2. Performance comparison (Part D)
-   - Record the timings you observed for QuickFind, QuickUnion and
-     Weighted Quick Union on the 250x250 board.
-   - Explain the asymptotic cost of each:
-       * QuickFind:   O(n) per find/unify  -> O(n^3) per filled n x n board
-       * QuickUnion:  O(n) worst case per operation (tall trees)
-       * Weighted Quick Union with path compression: effectively O(alpha(n))
-   - Explain why union by size keeps the trees short and why path
-     compression makes the amortized cost nearly constant.
+I tested 200 fully filled 11×11 boards.
+There were 0 violations, so exactly one player won in every trial. 
+winning path by one player blocks the other player's path, so both players cannot win and a completely filled Hex board cannot end in a draw.
+
+2. Performance Comparison
+
+For a 250×250 board with 50,000 moves:
+
+Quick-Find: 11272 seconds
+Quick-Union: 48 seconds
+Weighted Quick-Union + Path Compression: 29 seconds
+
+Quick-Find takes O(n) per operation. Quick-Union is O(n) in the worst case because trees can become tall. 
+Weighted Quick-Union keeps trees short by attaching smaller trees to larger ones, while path compression flattens the trees. 
+Its amortized cost is effectively O(α(n)), which is nearly constant.
+
+
+
+result of the main.cpp
+
+=== Part C: The No-Draw Theorem ===
+Board 11x11, 200 fully-filled trials.
+Violations (both or neither player wins): 0
+No-Draw Theorem holds in all trials.
+
+=== Part D: Performance (same random sequence per backend) ===
+Board 250x250, 50000 moves.
+[QuickFind]     winner = -1   time = 11272 s
+[QuickUnion]    winner = -1   time = 48 s
+[WeightedQU]    winner = -1   time = 29 s
