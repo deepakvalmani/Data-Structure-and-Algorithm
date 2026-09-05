@@ -1,0 +1,16 @@
+
+Performance Comparison
+
+I compared TextBufferArray and TextBufferList using the provided Stopwatch class. 
+Both implementations performed 100000 operations, including insertion, deletion, and cursor movement.
+
+The results were:
+
+TextBufferArray: 0 seconds
+TextBufferList: 0 seconds
+
+Both implementations produced the same final text of 30045 characters, so they are both working correctly.
+
+The stopwatch showed 0 seconds for both, so there was no noticeable performance difference in this test. 
+In general array implementation can be faster because its data is stored continuously in memory
+while the linkedlist implementation uses separate nodes.

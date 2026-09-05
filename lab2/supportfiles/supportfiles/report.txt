@@ -1,0 +1,19 @@
+Lab 2: Hex (board game) — Report
+==================================
+
+TODO: write your findings here.
+
+1. The No-Draw Theorem
+   - Describe what the Part C output shows.
+   - Explain why exactly one player must win on a completely filled board
+     (topological argument: a winning path for one player blocks the other).
+
+2. Performance comparison (Part D)
+   - Record the timings you observed for QuickFind, QuickUnion and
+     Weighted Quick Union on the 250x250 board.
+   - Explain the asymptotic cost of each:
+       * QuickFind:   O(n) per find/unify  -> O(n^3) per filled n x n board
+       * QuickUnion:  O(n) worst case per operation (tall trees)
+       * Weighted Quick Union with path compression: effectively O(alpha(n))
+   - Explain why union by size keeps the trees short and why path
+     compression makes the amortized cost nearly constant.
