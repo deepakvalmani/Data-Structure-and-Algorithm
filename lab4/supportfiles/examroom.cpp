@@ -31,28 +31,38 @@ public:
         };
         int max_distance = -1;
         int idx;
-        int first = occupied_.select(occupied_.size()-1);
+        int first = occupied_.select(occupied_.size() - 1);
         int distance = first;
 
-        if(distance> max_distance){
+        if (distance > max_distance)
+        {
             max_distance = distance;
             idx = 0;
         }
 
-        for (int i = occupied_.size()-1; i> 0; i--)
+        for (int i = occupied_.size() - 1; i > 0; i--)
         {
             int left = occupied_.select(i);
-            int right = occupied_.select(i-1);
+            int right = occupied_.select(i - 1);
 
-            int candidate = (right - left) / 2;
+            int candidate = left + (right - left) / 2;
             distance = candidate - left;
 
             if (distance > max_distance || distance == max_distance && candidate < idx)
             {
-                
+
                 max_distance = distance;
                 idx = candidate;
             }
+        }
+
+        int last = occupied_.select(0);
+        distance = (n_ - 1) - last;
+        if(distance > max_distance || distance == max_distance && (n_ -1) < idx)
+        {
+
+            max_distance = distance;
+            idx = n_ -1;
         }
         occupied_.add(idx);
 
