@@ -1,0 +1,53 @@
+1.Part A — How many walls does generate() knock down in an n-by-n maze, and why? Use your answer to explain why the maze is perfect.
+
+An n-by-n maze contains n^2 cells. The DFS generation algorithm starts at one cell and knocks down exactly one wall whenever it moves to
+a previously unvisited neighboring cell. The starting cell needs no passage to a parent, while each of the remaining n^2 - 1 cells is 
+first reached through exactly one passage. Therefore, generate() knocks down exactly n^2 - 1 walls.
+
+DFS visits every cell, so the maze is connected. It also creates exactly n^2 - 1 passages. 
+A connected graph with V vertices and V - 1 edges is a tree, so the maze has no cycles and has exactly one path between every pair of 
+cells. Therefore, the maze is perfect.
+
+2.Part B — Why are explore() and DepthFirstSearch guaranteed to find the same way out of a perfect maze? 
+Would this still hold if you knocked down a few more walls?
+
+A perfect maze has exactly one path from the entrance to the exit. 
+Both explore() and DepthFirstSearch search for a path between the same two cells. 
+Since there is only one possible path, both algorithms must find that same path, even if they explore neighboring cells in different 
+orders.
+If a few more walls were knocked down, the maze could contain cycles and multiple possible paths to the exit. The algorithms might then 
+find different paths because their neighbor-exploration orders can differ. Thus, they are not guaranteed to find the same way out once 
+the maze is no longer perfect.
+
+3.Part C — Why do we need onStack[]? Suppose DirectedCycle reported a cycle whenever it found an edge v -> w to a marked vertex w. 
+Give a digraph with 3 vertices and no directed cycle on which it would wrongly report one. Which of the six digraph files would it get 
+wrong?
+
+The marked[] array only tells us whether a vertex has ever been visited. It does not tell us whether its DFS call is still active. 
+The onStack[] array distinguishes vertices that are currently on the recursion stack from vertices whose DFS calls have already finished. 
+An edge to a vertex on the current recursion stack closes a directed cycle; an edge to a previously visited but finished vertex does not 
+necessarily do so.
+For example consider the digraph with edges 0 -> 1, 0 -> 2, and 2 -> 1. It has no directed cycle. DFS can visit and finish vertex 1
+while exploring from vertex 0, then visit vertex 2. When it examines 2 -> 1, vertex 1 is marked but is no longer on the recursion stack. 
+An algorithm that checks only marked[] would incorrectly report a cycle.
+The files that are DAGs are the ones at risk of this false positive: tinyDAG.txt, prereqs.txt, and mediumDAG.txt. 
+The exact false positive depends on the adjacency iteration order: it occurs when DFS encounters an edge to an already-finished vertex. 
+The onStack[] check prevents this error.
+
+4.Part C — Why does the constructor run dfs() from every unmarked vertex, and not only from vertex 0? Give a small example.
+
+A digraph may be disconnected, so starting DFS only from vertex 0 may leave other components unexplored. A directed cycle could exist in 
+one of those components and would be missed. The constructor therefore starts DFS from every unmarked vertex until it finds a cycle.
+For example consider three vertices with no edges from vertex 0, and with edges 1 -> 2 and 2 -> 1. 
+Starting DFS only at vertex 0 would not discover the cycle between vertices 1 and 2. Running DFS from every unmarked vertex finds it.
+
+5.Part C — What is the running time of DirectedCycle, as a function of V and E? What does ./cycle print for a digraph with one vertex and 
+a self-loop 0 -> 0?
+
+The running time is O(V + E). Each vertex is marked and added to the recursion stack at most once 
+and each directed edge is examined at most once. Constructing the cycle if one is found, takes at most O(V) additional time which does 
+not change the overall O(V + E) bound.
+For a digraph with one vertex and a self-loop 0 -> 0 DFS finds an edge from vertex 0 to itself while 0 is still on the recursion stack. 
+Therefore the program prints:
+
+directed cycle: 0 0
