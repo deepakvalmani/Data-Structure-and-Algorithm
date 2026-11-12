@@ -1,0 +1,60 @@
+Lab 7 - Part C report
+
+Output of ./hashstats words.txt 32768 (m = 2^15):
+
+n = 25143, m = 32768, alpha = 0.767303
+uniform hashing     empty = 15213                    compares = 1.38365
+31x+y               empty = 15280   longest = 7      compares = 1.38997
+32x+y               empty = 30071   longest = 736    compares = 55.3243
+sum of letters      empty = 31364   longest = 86     compares = 20.1131
+first two letters   empty = 32025   longest = 890    compares = 92.5127
+FNV-1a              empty = 15262   longest = 6      compares = 1.39005
+
+(For m = 27803, 31x+y gave empty = 11195, longest = 8, compares = 1.45066.)
+
+
+1. Does 31x+y behave like uniform hashing?
+
+Yes, for both values of m. For m = 27803 it has 11195 empty chains (uniform
+gives 11255) and 1.45066 compares (uniform gives 1.45216). For m = 32768 it has
+15280 empty chains (uniform 15213) and 1.38997 compares (uniform 1.38365). The
+longest chain is only 7 or 8, so it is very close to uniform.
+
+
+2. Sum of the letters
+
+A 22-letter word has a sum of at most about 22 * 122 = 2684, and most words are
+shorter. So all the hash codes are small and every word ends up in the first
+~2700 chains. The rest stay empty. Only 1404 chains are used for both m values
+(27803 - 26399 = 32768 - 31364), and the longest chain and compares are the same
+for both m too, because m is bigger than any sum so "mod m" changes nothing.
+
+Anagrams always collide for every m, since they have the same letters and so the
+same sum. Example: "pat" and "tap".
+
+
+3. Why is 32x+y bad for m = 2^15?
+
+Since 32^3 = 2^15, every letter except the last three is multiplied by a
+multiple of 2^15, so it disappears mod 2^15. The index only depends on the last
+three letters. Lots of words share endings like -ing or -ion, so they pile up
+in the same chains. Only 2697 chains are used and the longest has 736 words.
+With a prime m this doesn't happen, so it is okay for m = 27803.
+
+
+4. Why is hashing only the first two letters bad?
+
+There are only about 26 * 26 = 676 possible pairs of letters, so at most a few
+hundred chains can ever be used, however big m is (743 here, a bit more than 676
+because of words with capitals, digits or punctuation). The pairs are also very
+uneven, since a lot of words start with "co", "re", "un", "in" and so on. That
+gives a longest chain of 890.
+
+
+5. Why might we still prefer FNV-1a?
+
+On this dictionary both are equally good (1.39 compares each at m = 2^15). But
+FNV-1a mixes the bits of every letter into the whole hash code, so it should
+work well for any table size, including powers of 2, and for other kinds of
+keys like IDs or binary data. 31x+y is simple but easier to break: "Aa" and "BB"
+have the same 31x+y hash code, so it is easy to make lots of colliding keys.
